@@ -1,54 +1,89 @@
-import React, {Component} from 'react'
+import React, {Component} from 'react';
 
-import {View, Text, Button} from 'react-native';
+import {View, Text, Button, StyleSheet} from 'react-native';
 
-import tickets from '../data/tickets'
+import tickets from '../data/tickets';
 
 import AsyncStorage from '@react-native-community/async-storage';
 
 class TicketInfo extends Component {
-  constructor (props) {
+  constructor(props) {
     super(props);
     this.state = {
       ticketNumber: this.props.route.params.ticketNumber,
-      isCheckedIn: this.props.route.params.isCheckedIn
-    }
+      isCheckedIn: this.props.route.params.isCheckedIn,
+      entranceTime: 'o',
+    };
   }
 
-  onPressed () {
-    this.setState({isCheckedIn: true})
-    const time = (new Date()).getTime().toString();
-    AsyncStorage.setItem(this.state.ticketNumber, time).then(() => {this.props.route.params.onCheckedIn()})
+  onPressed() {
+    const time = new Date();
+    this.setState({isCheckedIn: true, entranceTime: time.toLocaleString()});
+    AsyncStorage.setItem(this.state.ticketNumber, time.toString()).then(() => {
+      this.props.route.params.onCheckedIn();
+    });
   }
 
-  isHere () {
+  isHere() {
     if (this.state.isCheckedIn === -1) {
       return (
-        <Text>NOT YET HERE</Text>
+        <View style={styles.button}>
+        <Button title="Check in" onPress={() => this.onPressed()} />
+        </View>
       )
     } else {
-        return (
-          <Text>HERE WILL BE ENTRANCE TIME</Text>
-        )
-      }
+    return <Text style={{backgroundColor: '#33FF99'}}>STATUS: Here since {this.state.entranceTime}</Text>;
     }
+  }
 
-  render () {
-    const ticket = tickets.find(tick => tick.ticketNumber == this.state.ticketNumber);
-  return (
-    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-    <Text>{ticket.ticketNumber}</Text>
-    <Text>{ticket.name}</Text>
-    <Text>{ticket.site}</Text>
-    <Text>{this.state.isCheckedIn}</Text>
-    <Button
-            title="Let them in"
-            onPress={() => this.onPressed()}
-          />
-      <View>{this.isHere()}</View>
-    </View>
-  )
+  async getEntranceTime (ticketNumber) {
+    const time = await AsyncStorage.getItem(ticketNumber);
+    this.setState({entranceTime: new Date(time).toLocaleString()})
+  }
+
+  componentDidMount () {
+    this.getEntranceTime(this.state.ticketNumber)
+  }
+
+  render() {
+    console.log('Ticket info props', this.props)
+    const ticket = tickets.find(
+      tick => tick.ticketNumber == this.state.ticketNumber,
+    );
+    return (
+      <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
+        <View stile={styles.ticketDetails}>
+        <Text>TICKET NUMBER: {ticket.ticketNumber}</Text>
+        <Text>NAME ON THE TICKET: {ticket.name}</Text>
+        <Text>ZONE/SITE RESERVED: {ticket.site}</Text>
+        {/* <Text>{this.state.isCheckedIn}</Text> */}
+        {this.isHere()}
+        </View>
+      </View>
+    );
   }
 }
 
-export default TicketInfo
+const styles = StyleSheet.create({
+  button: {
+    backgroundColor: '#33FF99',
+    // borderColor: 'white',
+    borderWidth: 1,
+    borderRadius: 12,
+    color: 'black',
+    fontSize: 80,
+    fontWeight: 'bold',
+    overflow: 'hidden',
+    padding: 12,
+    textAlign:'center',
+    margin: 20
+  },
+  ticketDetails: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    fontSize: 40,
+    margin: 30
+  }
+});
+
+export default TicketInfo;

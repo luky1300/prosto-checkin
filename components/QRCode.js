@@ -1,37 +1,31 @@
 import React, {Component} from 'react';
 
-import {
-  StyleSheet,
-  Text
-} from 'react-native';
-
-import TicketInfo from './TicketInfo'
+import {StyleSheet, Text} from 'react-native';
 
 import QRCodeScanner from 'react-native-qrcode-scanner';
 
 class QRCode extends Component {
-  constructor (props) {
-    super(props)
+  constructor(props) {
+    super(props);
   }
 
-  onSuccess = (e) => {
-    this.props.navigation.navigate(
-      'Ticket Info',
-      {
-        ticketNumber: e.data
-      }
-    )
-  }
+  onSuccess = e => {
+    const checkedIn = this.props.route.params.checkedIn
+    const isCheckedIn = checkedIn.indexOf(e.data);
+    this.props.navigation.navigate('Ticket Info', {
+      ticketNumber: e.data,
+      isCheckedIn: isCheckedIn,
+      onCheckedIn: this.props.route.params.onCheckedIn,
+    });
+  };
 
-  render() {
+  render()
+  {
+    console.log('QR CODE PROPS', this.props)
     return (
       <QRCodeScanner
         onRead={this.onSuccess}
-        topContent={
-          <Text style={styles.centerText}>
-            Scan ticket
-          </Text>
-        }
+        topContent={<Text style={styles.centerText}>Scan ticket</Text>}
       />
     );
   }
@@ -56,6 +50,5 @@ const styles = StyleSheet.create({
     padding: 16,
   },
 });
-
 
 export default QRCode;

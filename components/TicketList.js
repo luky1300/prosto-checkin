@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 
 import {
   ScrollView,
@@ -7,11 +7,11 @@ import {
   View,
   TouchableOpacity,
   Image,
-  Button
+  Button,
 } from 'react-native';
-import SearchInput, { createFilter } from 'react-native-search-filter';
+import SearchInput, {createFilter} from 'react-native-search-filter';
 
-import tickets from '../data/tickets'
+import tickets from '../data/tickets';
 
 import AsyncStorage from '@react-native-community/async-storage';
 
@@ -22,92 +22,102 @@ class TicketList extends Component {
     super(props);
     this.state = {
       searchTerm: '',
-      checkedIn: []
-    }
-  this.onCheckedIn = this.onCheckedIn.bind(this)
+      checkedIn: [],
+    };
+    this.onCheckedIn = this.onCheckedIn.bind(this);
+
   }
   searchUpdated(term) {
-    this.setState({ searchTerm: term })
-  }
-
-  onCheckedIn() {
-    this.fetchCheckedIn()
+    this.setState({searchTerm: term});
   }
 
   onPressed(num) {
-    const isCheckedIn = this.state.checkedIn.indexOf(num)
-    this.props.navigation.navigate(
-      'Ticket Info',
-      {
-        ticketNumber: num,
-        isCheckedIn: isCheckedIn,
-        onCheckedIn: this.onCheckedIn
-      }
-    )
+    const isCheckedIn = this.state.checkedIn.indexOf(num);
+    this.props.navigation.navigate('Ticket Info', {
+      ticketNumber: num,
+      isCheckedIn: isCheckedIn,
+      onCheckedIn: this.onCheckedIn,
+    });
+  }
+
+  onPressedQR() {
+    this.props.navigation.navigate('QR Scanner', {
+      onCheckedIn: this.onCheckedIn,
+      checkedIn: this.state.checkedIn,
+    });
   }
 
   status(ticket) {
-    if(this.state.checkedIn.indexOf(ticket.ticketNumber) !== -1) {
+    if (this.state.checkedIn.indexOf(ticket.ticketNumber) !== -1) {
       return (
         <Image
           style={{width: 60, height: 60}}
           source={require('../img/guitar.png')}
         />
-      )
+      );
     }
   }
 
-  async fetchCheckedIn () {
+  onCheckedIn() {
+    this.fetchCheckedIn();
+  }
+
+  async fetchCheckedIn() {
     try {
-      let checkedIn = await AsyncStorage.getAllKeys()
-        if (checkedIn) {
-        this.setState({checkedIn: checkedIn})
+      let checkedIn = await AsyncStorage.getAllKeys();
+      if (checkedIn) {
+        this.setState({checkedIn: checkedIn});
       }
-    } catch(e) {
-      alert('Could not fetch checkedIn')
+    } catch (e) {
+      alert('Could not fetch checkedIn');
     }
   }
 
-  componentDidMount () {
-    this.fetchCheckedIn
-    // AsyncStorage.clear()
+  componentDidMount() {
+    this.fetchCheckedIn();
   }
 
-  render () {
-    const filteredTickets = tickets.filter(createFilter(this.state.searchTerm, KEYS_TO_FILTERS))
-    let icon = ''
+  render() {
+    const filteredTickets = tickets.filter(
+      createFilter(this.state.searchTerm, KEYS_TO_FILTERS),
+    );
     return (
       <View style={styles.container}>
+        {/* <Button title="Update list" onPress={() => this.fetchCheckedIn()} /> */}
         <Button
-            title="Update list"
-            onPress={() => this.fetchCheckedIn()}
-          />
-           <Button
-            title="Clear storage"
-            onPress={() => AsyncStorage.clear().done()}
-          />
+          title="Clear storage"
+          onPress={() => AsyncStorage.clear().done()}
+        />
+        <View style={styles.scanQR}>
+        <Button
+          title="Scan QR Code"
+          onPress={() => this.onPressedQR()}
+        />
+        </View>
         <SearchInput
-          onChangeText={(term) => { this.searchUpdated(term) }}
+          onChangeText={term => {
+            this.searchUpdated(term);
+          }}
           style={styles.searchInput}
-          placeholder="Ticket # or Last Name"
+          placeholder="Enter Ticket # or Last Name"
         />
         <ScrollView>
           {filteredTickets.map(ticket => {
             return (
               <TouchableOpacity
-                onPress={(num) => this.onPressed(ticket.ticketNumber)}
+                onPress={num => this.onPressed(ticket.ticketNumber)}
                 key={ticket.name}
                 style={styles.ticketItem}>
                 <View style={styles.ticketBox}>
                   <View style={styles.ticketInfo}>
-                  <Text style={styles.ticketName}>{ticket.ticketNumber}</Text>
-                  <Text style={styles.ticketNumber}>{ticket.name}</Text>
-                  <Text style={styles.ticketNumber}>{ticket.site}</Text>
+                    <Text style={styles.ticketName}>{ticket.ticketNumber}</Text>
+                    <Text style={styles.ticketNumber}>{ticket.name}</Text>
+                    <Text style={styles.ticketNumber}>{ticket.site}</Text>
                   </View>
                   {this.status(ticket)}
                 </View>
               </TouchableOpacity>
-            )
+            );
           })}
         </ScrollView>
       </View>
@@ -118,35 +128,46 @@ class TicketList extends Component {
 const styles = StyleSheet.create({
   container: {
     flex: 2,
-    backgroundColor: '#fff'
+    backgroundColor: '#fff',
   },
   ticketBox: {
     flexDirection: 'row',
     backgroundColor: '#fff',
     justifyContent: 'space-between',
-    alignItems: 'center'
+    alignItems: 'center',
   },
   ticketInfo: {
     flexDirection: 'column',
-    backgroundColor: '#fff'
+    backgroundColor: '#fff',
   },
   ticketItem: {
+    borderTopWidth: 0.5,
     borderBottomWidth: 0.5,
     borderColor: 'rgba(0,0,0,0.3)',
-    padding: 10
+    padding: 10,
   },
   ticketNumber: {
     color: 'rgba(0,0,0,0.5)',
-    fontSize: 20
+    fontSize: 20,
   },
   ticketName: {
-    fontSize: 25
+    fontSize: 25,
   },
   searchInput: {
-    padding: 40,
+    padding: 20,
     borderColor: '#CCC',
-    borderWidth: 1
-  }
+    width: '100%',
+    borderWidth: 1,
+    textAlign: 'center',
+  },
+  scanQR: {
+    padding: 20,
+    borderColor: '#CCC',
+    width: '100%',
+    borderWidth: 1,
+    textAlign: 'center',
+    fontSize: 40,
+  },
 });
 
 export default TicketList;
