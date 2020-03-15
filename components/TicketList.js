@@ -7,12 +7,13 @@ import {
   View,
   TouchableOpacity,
   Image,
-  AsyncStorage} from 'react-native';
+  Button
+} from 'react-native';
 import SearchInput, { createFilter } from 'react-native-search-filter';
 
 import tickets from '../data/tickets'
 
-const STORAGE_KEY = '@save_name'
+import AsyncStorage from '@react-native-community/async-storage';
 
 const KEYS_TO_FILTERS = ['ticketNumber', 'name'];
 
@@ -20,24 +21,33 @@ class TicketList extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      searchTerm: ''
+      searchTerm: '',
+      checkedIn: []
     }
+  this.onCheckedIn = this.onCheckedIn.bind(this)
   }
   searchUpdated(term) {
     this.setState({ searchTerm: term })
   }
 
+  onCheckedIn() {
+    this.fetchCheckedIn()
+  }
+
   onPressed(num) {
+    const isCheckedIn = this.state.checkedIn.indexOf(num)
     this.props.navigation.navigate(
       'Ticket Info',
       {
-        ticketNumber: num
+        ticketNumber: num,
+        isCheckedIn: isCheckedIn,
+        onCheckedIn: this.onCheckedIn
       }
     )
   }
 
   status(ticket) {
-    if(ticket.isHere) {
+    if(this.state.checkedIn.indexOf(ticket.ticketNumber) !== -1) {
       return (
         <Image
           style={{width: 60, height: 60}}
@@ -47,11 +57,35 @@ class TicketList extends Component {
     }
   }
 
+  async fetchCheckedIn () {
+    try {
+      let checkedIn = await AsyncStorage.getAllKeys()
+        if (checkedIn) {
+        this.setState({checkedIn: checkedIn})
+      }
+    } catch(e) {
+      alert('Could not fetch checkedIn')
+    }
+  }
+
+  componentDidMount () {
+    this.fetchCheckedIn
+    // AsyncStorage.clear()
+  }
+
   render () {
     const filteredTickets = tickets.filter(createFilter(this.state.searchTerm, KEYS_TO_FILTERS))
     let icon = ''
     return (
       <View style={styles.container}>
+        <Button
+            title="Update list"
+            onPress={() => this.fetchCheckedIn()}
+          />
+           <Button
+            title="Clear storage"
+            onPress={() => AsyncStorage.clear().done()}
+          />
         <SearchInput
           onChangeText={(term) => { this.searchUpdated(term) }}
           style={styles.searchInput}

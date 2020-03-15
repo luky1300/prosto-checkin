@@ -1,17 +1,37 @@
 import React, {Component} from 'react';
 
-import {View, Text, StyleSheet} from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  Button
+} from 'react-native';
 
 import NumericInput from 'react-native-numeric-input'
 
+// import AsyncStorage from '@react-native-community/async-storage';
+
 class NewGuest extends Component {
-  constructor (props) {
-    super (props);
+  constructor(props) {
+    super(props);
     this.state = {
       quantR: 0,
       quantA: 0
-    }
+    };
   }
+
+  // save = async () => {
+  //   try {
+  // const time = (new Date()).getTime().toString();
+  //     const amount = (this.state.quantR * 40 + this.state.quantA * 10).toString();
+  //     await AsyncStorage.setItem(time, amount);
+  //     alert(`${time}, ${amount}`)
+  //   } catch (e) {
+  //     alert('Failed to save')
+  //   }
+  // }
+
+
   render () {
     const total = this.state.quantR * 40 + this.state.quantA * 10
     return (
@@ -35,6 +55,11 @@ class NewGuest extends Component {
       totalWidth={240}
       />
     <Text style={styles.total}>Total: ${total}</Text>
+    <Button
+          title="Let them in"
+          color="#f3ff"
+          onPress={() => alert('Pressed')}
+        />
     </View>
   );
     }
