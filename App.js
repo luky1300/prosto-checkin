@@ -11,6 +11,8 @@ import QRCode from './components/QRCode';
 import TicketInfo from './components/TicketInfo';
 import Storage from './components/Storage';
 
+console.disableYellowBox = true
+
 const Tab = createBottomTabNavigator();
 
 function MyTabs() {

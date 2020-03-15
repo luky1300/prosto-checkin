@@ -63,18 +63,20 @@ class NewGuest extends Component {
       totalAmount,
       totalR,
       totalA,
-    }
+    };
   }
 
   showTotals() {
-    const {totalAmount, totalR, totalA} = this.getTotals()
+    const {totalAmount, totalR, totalA} = this.getTotals();
     return (
-    <View>
-    <Text>New Guests (Regular): {totalR}</Text>
-    <Text>New Guests (Senior): {totalA}</Text>
-    <Text>Total $$: {totalAmount}</Text>
-    </View>
-    )
+      <View>
+        <Text />
+        <Text style={styles.totalsTextTitle}>New guests totals:</Text>
+        <Text style={styles.totalsText}>Regular tickets sold: {totalR}</Text>
+        <Text style={styles.totalsText}>Senior tickets sold: {totalA}</Text>
+        <Text style={styles.totalsText}>Total: ${totalAmount}</Text>
+      </View>
+    );
   }
 
   componentDidMount() {
@@ -85,7 +87,7 @@ class NewGuest extends Component {
     const total = this.state.quantR * 40 + this.state.quantA * 10;
     return (
       <View style={styles.container}>
-        <Text style={styles.button}>Regular Tickets 16+ ($40)</Text>
+        <Text style={styles.buttonText}>Regular Tickets 16+ ($40)</Text>
         <NumericInput
           type="plus-minus"
           initValue={this.state.quantR}
@@ -95,10 +97,10 @@ class NewGuest extends Component {
           rounded
           totalWidth={240}
         />
-        <Text style={styles.button}>Adult Tickets ($10)</Text>
+        <Text style={styles.buttonText}>Senior Tickets ($10)</Text>
         <NumericInput
           type="plus-minus"
-          initValue={this.state.quantR}
+          initValue={this.state.quantA}
           value={this.state.quantA}
           onChange={value => this.setState({quantA: value})}
           rounded
@@ -107,11 +109,9 @@ class NewGuest extends Component {
         />
         <Text style={styles.total}>Total: ${total}</Text>
         <View style={styles.submitButton}>
-          <Button title="Check in" onPress={() => this.save()} />
+          <Button color="black" title="Check in" onPress={() => this.save()} />
         </View>
-        <View>
-          {this.showTotals()}
-        </View>
+        <View style={styles.totalsContainer}>{this.showTotals()}</View>
       </View>
     );
   }
@@ -124,21 +124,20 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  button: {
-    margin: 20,
-    padding: 20,
-    fontSize: 20,
+  buttonText: {
+    marginTop: 35,
+    padding: 10,
+    fontSize: 25,
     fontWeight: 'bold',
   },
   total: {
     padding: 10,
     fontSize: 30,
     fontWeight: 'bold',
-    margin: 20,
+    marginTop: 20,
   },
   submitButton: {
     backgroundColor: '#33FF99',
-    // borderColor: 'white',
     borderWidth: 1,
     borderRadius: 12,
     color: 'black',
@@ -148,6 +147,21 @@ const styles = StyleSheet.create({
     padding: 12,
     textAlign: 'center',
     margin: 20,
+    width: '70%',
+  },
+  totalsContainer: {
+    borderTopColor: 'black',
+    borderTopWidth: 2,
+    width: '100%',
+  },
+  totalsText: {
+    fontSize: 20,
+    marginLeft: 20,
+  },
+  totalsTextTitle: {
+    fontSize: 20,
+    marginLeft: 20,
+    fontWeight: 'bold',
   },
 });
 

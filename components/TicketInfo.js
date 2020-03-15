@@ -28,37 +28,50 @@ class TicketInfo extends Component {
     if (this.state.isCheckedIn === -1) {
       return (
         <View style={styles.button}>
-        <Button title="Check in" onPress={() => this.onPressed()} />
+          <Button title="Check in" onPress={() => this.onPressed()} />
         </View>
-      )
+      );
     } else {
-    return <Text style={{backgroundColor: '#33FF99'}}>STATUS: Here since {this.state.entranceTime}</Text>;
+      return (
+        <View style={styles.ticketDetails}>
+          <Text style={styles.fieldValueStatus}>
+            Checked in
+          </Text>
+          <Text style={styles.fieldValueStatus2}>
+            since {this.state.entranceTime}
+          </Text>
+        </View>
+      );
     }
   }
 
-  async getEntranceTime (ticketNumber) {
+  async getEntranceTime(ticketNumber) {
     const time = await AsyncStorage.getItem(ticketNumber);
-    this.setState({entranceTime: new Date(time).toLocaleString()})
+    this.setState({entranceTime: new Date(time).toLocaleString()});
   }
 
-  componentDidMount () {
-    this.getEntranceTime(this.state.ticketNumber)
+  componentDidMount() {
+    this.getEntranceTime(this.state.ticketNumber);
   }
 
   render() {
-    console.log('Ticket info props', this.props)
     const ticket = tickets.find(
       tick => tick.ticketNumber == this.state.ticketNumber,
     );
+    if (!ticket.site) {
+      ticket.site = 'None'
+    }
     return (
       <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
-        <View stile={styles.ticketDetails}>
-        <Text>TICKET NUMBER: {ticket.ticketNumber}</Text>
-        <Text>NAME ON THE TICKET: {ticket.name}</Text>
-        <Text>ZONE/SITE RESERVED: {ticket.site}</Text>
-        {/* <Text>{this.state.isCheckedIn}</Text> */}
-        {this.isHere()}
+        <View style={styles.ticketDetails}>
+          <Text>TICKET NUMBER:</Text>
+          <Text style={styles.fieldValue}>{ticket.ticketNumber}</Text>
+          <Text>NAME ON THE TICKET:</Text>
+          <Text style={styles.fieldValue}>{ticket.name}</Text>
+          <Text>ZONE/SITE RESERVED:</Text>
+          <Text style={styles.fieldValue}>{ticket.site}</Text>
         </View>
+        {this.isHere()}
       </View>
     );
   }
@@ -67,7 +80,6 @@ class TicketInfo extends Component {
 const styles = StyleSheet.create({
   button: {
     backgroundColor: '#33FF99',
-    // borderColor: 'white',
     borderWidth: 1,
     borderRadius: 12,
     color: 'black',
@@ -75,15 +87,24 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     overflow: 'hidden',
     padding: 12,
-    textAlign:'center',
-    margin: 20
+    textAlign: 'center',
+    marginTop: 15,
+    width: '70%'
   },
   ticketDetails: {
     alignItems: 'center',
-    justifyContent: 'center',
+  },
+  fieldValue: {
     fontSize: 40,
-    margin: 30
-  }
+    marginBottom: 30,
+  },
+  fieldValueStatus: {
+    backgroundColor: '#33FF99',
+    fontSize: 40,
+  },
+  fieldValueStatus2: {
+    fontSize: 20,
+  },
 });
 
 export default TicketInfo;

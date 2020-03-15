@@ -83,16 +83,17 @@ class TicketList extends Component {
     );
     return (
       <View style={styles.container}>
-        {/* <Button title="Update list" onPress={() => this.fetchCheckedIn()} /> */}
         <Button
           title="Clear storage"
           onPress={() => AsyncStorage.clear().done()}
         />
+        <View style={styles.containerQR}>
         <View style={styles.scanQR}>
-        <Button
+        <Button color="black"
           title="Scan QR Code"
           onPress={() => this.onPressedQR()}
         />
+        </View>
         </View>
         <SearchInput
           onChangeText={term => {
@@ -160,13 +161,21 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     textAlign: 'center',
   },
+  containerQR: {
+    alignItems: 'center',
+    margin: 5
+  },
   scanQR: {
-    padding: 20,
-    borderColor: '#CCC',
-    width: '100%',
+    backgroundColor: '#33FF99',
     borderWidth: 1,
+    borderRadius: 12,
+    fontSize: 80,
+    fontWeight: 'bold',
+    overflow: 'hidden',
+    padding: 12,
     textAlign: 'center',
-    fontSize: 40,
+    marginTop: 15,
+    width: '70%',
   },
 });
 
