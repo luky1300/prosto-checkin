@@ -1,8 +1,7 @@
 import React, {Component} from 'react';
-
 import {StyleSheet, Text} from 'react-native';
-
 import QRCodeScanner from 'react-native-qrcode-scanner';
+
 
 class QRCode extends Component {
   constructor(props) {
@@ -10,7 +9,7 @@ class QRCode extends Component {
   }
 
   onSuccess = e => {
-    const checkedIn = this.props.route.params.checkedIn
+    const checkedIn = this.props.route.params.checkedIn;
     const isCheckedIn = checkedIn.indexOf(e.data);
     this.props.navigation.navigate('Ticket Info', {
       ticketNumber: e.data,
@@ -19,9 +18,8 @@ class QRCode extends Component {
     });
   };
 
-  render()
-  {
-    console.log('QR CODE PROPS', this.props)
+  render() {
+    console.log('QR CODE PROPS', this.props);
     return (
       <QRCodeScanner
         onRead={this.onSuccess}

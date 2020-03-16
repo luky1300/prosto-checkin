@@ -1,5 +1,4 @@
 import React, {Component} from 'react';
-
 import {
   ScrollView,
   StyleSheet,
@@ -10,9 +9,7 @@ import {
   Button,
 } from 'react-native';
 import SearchInput, {createFilter} from 'react-native-search-filter';
-
 import tickets from '../data/tickets';
-
 import AsyncStorage from '@react-native-community/async-storage';
 
 const KEYS_TO_FILTERS = ['ticketNumber', 'name'];
@@ -25,7 +22,6 @@ class TicketList extends Component {
       checkedIn: [],
     };
     this.onCheckedIn = this.onCheckedIn.bind(this);
-
   }
   searchUpdated(term) {
     this.setState({searchTerm: term});
@@ -69,7 +65,7 @@ class TicketList extends Component {
         this.setState({checkedIn: checkedIn});
       }
     } catch (e) {
-      alert('Could not fetch checkedIn');
+      console.log(encodeURIComponent);
     }
   }
 
@@ -88,12 +84,13 @@ class TicketList extends Component {
           onPress={() => AsyncStorage.clear().done()}
         />
         <View style={styles.containerQR}>
-        <View style={styles.scanQR}>
-        <Button color="black"
-          title="Scan QR Code"
-          onPress={() => this.onPressedQR()}
-        />
-        </View>
+          <View style={styles.scanQR}>
+            <Button
+              color="black"
+              title="Scan QR Code"
+              onPress={() => this.onPressedQR()}
+            />
+          </View>
         </View>
         <SearchInput
           onChangeText={term => {
@@ -163,7 +160,7 @@ const styles = StyleSheet.create({
   },
   containerQR: {
     alignItems: 'center',
-    margin: 5
+    margin: 5,
   },
   scanQR: {
     backgroundColor: '#33FF99',

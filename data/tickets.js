@@ -27,8 +27,13 @@ let tickets = [
   {
     ticketNumber: '36469412',
     name: 'John Doe',
-    site: ''
-  }
+    site: '',
+  },
+  {
+    ticketNumber: '86609772',
+    name: 'John Doe',
+    site: '',
+  },
 ];
 
 export default tickets;

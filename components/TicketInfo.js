@@ -1,9 +1,6 @@
 import React, {Component} from 'react';
-
 import {View, Text, Button, StyleSheet} from 'react-native';
-
 import tickets from '../data/tickets';
-
 import AsyncStorage from '@react-native-community/async-storage';
 
 class TicketInfo extends Component {
@@ -12,7 +9,7 @@ class TicketInfo extends Component {
     this.state = {
       ticketNumber: this.props.route.params.ticketNumber,
       isCheckedIn: this.props.route.params.isCheckedIn,
-      entranceTime: 'o',
+      entranceTime: '',
     };
   }
 
@@ -34,9 +31,7 @@ class TicketInfo extends Component {
     } else {
       return (
         <View style={styles.ticketDetails}>
-          <Text style={styles.fieldValueStatus}>
-            Checked in
-          </Text>
+          <Text style={styles.fieldValueStatus}>Checked in</Text>
           <Text style={styles.fieldValueStatus2}>
             since {this.state.entranceTime}
           </Text>
@@ -59,7 +54,7 @@ class TicketInfo extends Component {
       tick => tick.ticketNumber == this.state.ticketNumber,
     );
     if (!ticket.site) {
-      ticket.site = 'None'
+      ticket.site = 'None';
     }
     return (
       <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
@@ -89,7 +84,7 @@ const styles = StyleSheet.create({
     padding: 12,
     textAlign: 'center',
     marginTop: 15,
-    width: '70%'
+    width: '70%',
   },
   ticketDetails: {
     alignItems: 'center',

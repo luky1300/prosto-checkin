@@ -1,9 +1,6 @@
 import React, {Component} from 'react';
-
 import {View, Text, StyleSheet, Button} from 'react-native';
-
 import NumericInput from 'react-native-numeric-input';
-
 import AsyncStorage from '@react-native-community/async-storage';
 
 class NewGuest extends Component {
@@ -23,7 +20,7 @@ class NewGuest extends Component {
         this.setState({newGuests: JSON.parse(newGuests)});
       }
     } catch (e) {
-      alert('Could not fetch guests');
+      console.log(e);
     }
   }
 
@@ -46,7 +43,7 @@ class NewGuest extends Component {
       await AsyncStorage.removeItem('new_guests');
       await AsyncStorage.setItem('new_guests', JSON.stringify(newestGuests));
     } catch (e) {
-      alert('Failed to save');
+      console.log(e);
     }
   }
 
