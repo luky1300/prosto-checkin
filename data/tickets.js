@@ -1,13 +1,18 @@
 let tickets = [
   {
-    ticketNumber: '12345',
-    name: 'Strelnikov Vasiliy',
-    site: 'Matroskino 3',
+    ticketNumber: '62562603',
+    name: 'Yuliya Roy',
+    site: 'Charlotte',
   },
   {
-    ticketNumber: '45678',
-    name: 'Strelnikova Julia',
-    site: 'Mamino 5',
+    ticketNumber: '91426072',
+    name: 'Елена Клепец',
+    site: 'Папино 3',
+  },  
+  {
+    ticketNumber: '91906438',
+    name: 'Shlyahta Николай',
+    site: 'Галкино 19',
   },
   {
     ticketNumber: '23456',

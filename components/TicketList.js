@@ -9,7 +9,7 @@ import {
   Button,
 } from 'react-native';
 import SearchInput, {createFilter} from 'react-native-search-filter';
-import tickets from '../data/tickets';
+//import tickets from '../data/tickets';
 import AsyncStorage from '@react-native-community/async-storage';
 
 const KEYS_TO_FILTERS = ['ticketNumber', 'name'];
@@ -17,14 +17,26 @@ const KEYS_TO_FILTERS = ['ticketNumber', 'name'];
 class TicketList extends Component {
   constructor(props) {
     super(props);
+
+    console.log("Ticketlist construtor:", props);
+
     this.state = {
       searchTerm: '',
       checkedIn: [],
+      tickets: [...this.props.ticketList]
     };
     this.onCheckedIn = this.onCheckedIn.bind(this);
+    //this.tickets = ;
   }
   searchUpdated(term) {
     this.setState({searchTerm: term});
+  }
+
+  componentDidUpdate(prevProps){
+    if (prevProps.ticketList !== this.props.ticketList) {
+      console.log('TicketList.componentDidUpdate', this.props);
+      this.setState({tickets : [...this.props.ticketList]})
+    }
   }
 
   onPressed(num) {
@@ -61,6 +73,7 @@ class TicketList extends Component {
   async fetchCheckedIn() {
     try {
       let checkedIn = await AsyncStorage.getAllKeys();
+      console.log(checkedIn)
       if (checkedIn) {
         this.setState({checkedIn: checkedIn});
       }
@@ -74,8 +87,8 @@ class TicketList extends Component {
   }
 
   render() {
-    const filteredTickets = tickets.filter(
-      createFilter(this.state.searchTerm, KEYS_TO_FILTERS),
+    const filteredTickets = this.state.tickets.filter(
+      createFilter(this.state.searchTerm, KEYS_TO_FILTERS, false),
     );
     return (
       <View style={styles.container}>
