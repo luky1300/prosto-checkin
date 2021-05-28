@@ -7,7 +7,7 @@ class NewGuest extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      downloadDisabled: false,
+      downloadDisabled: true,
       disabledClicks: 0
     };
   }
@@ -18,58 +18,22 @@ class NewGuest extends Component {
       let ticketList = await response.json();
       console.log("FETCH GUESTS LIST", ticketList);
       await AsyncStorage.setItem('ticket_list', JSON.stringify(ticketList));
+      await AsyncStorage.setItem('download_disabled', 'true');
       this.props.onTicketListChanged(ticketList);
       this.setState({downloadDisabled : true, disabledClicks: 0});
     } else {
-      if (this.state.disabledClick == 5) {
+      if (this.state.disabledClicks == 4) {
         this.setState({downloadDisabled:false, disabledClicks: 0});  
       } else {
-        this.setState({disabledClicks: this.state.disabledClick + 1});
+        console.log(this.state.disabledClicks)
+        this.setState({disabledClicks: this.state.disabledClicks + 1});
       }
     }
   }
 
-  async save() {
-    try {
-      const time = new Date().getTime().toString();
-      const amount = this.state.quantR * 40 + this.state.quantA * 10;
-      const newGuest = {
-        time: time,
-        quantR: this.state.quantR,
-        quantA: this.state.quantA,
-        amount: amount,
-      };
-      const newestGuests = [...this.state.newGuests, newGuest];
-      this.setState({
-        newGuests: newestGuests,
-        quantA: 0,
-        quantR: 0,
-      });
-      await AsyncStorage.removeItem('new_guests');
-      await AsyncStorage.setItem('new_guests', JSON.stringify(newestGuests));
-    } catch (e) {
-      console.log(e);
-    }
-  }
-
-  getTotals() {
-    let totalAmount = 0;
-    let totalR = 0;
-    let totalA = 0;
-    this.state.newGuests.forEach(el => {
-      totalAmount += Number(el.amount);
-      totalR += Number(el.quantR);
-      totalA += Number(el.quantA);
-    });
-    return {
-      totalAmount,
-      totalR,
-      totalA,
-    };
-  }
-
-  componentDidMount() {
-    //this.fetchNewGuests();
+  async componentDidMount() {
+    const downloadDisabled = await AsyncStorage.getItem("download_disabled") == "true";
+    this.setState({downloadDisabled:downloadDisabled})
   }
 
   render() {

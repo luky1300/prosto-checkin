@@ -18,15 +18,12 @@ class TicketList extends Component {
   constructor(props) {
     super(props);
 
-    console.log("Ticketlist construtor:", props);
-
     this.state = {
       searchTerm: '',
       checkedIn: [],
       tickets: [...this.props.ticketList]
     };
     this.onCheckedIn = this.onCheckedIn.bind(this);
-    //this.tickets = ;
   }
   searchUpdated(term) {
     this.setState({searchTerm: term});
@@ -34,7 +31,6 @@ class TicketList extends Component {
 
   componentDidUpdate(prevProps){
     if (prevProps.ticketList !== this.props.ticketList) {
-      console.log('TicketList.componentDidUpdate', this.props);
       this.setState({tickets : [...this.props.ticketList]})
     }
   }
@@ -73,7 +69,6 @@ class TicketList extends Component {
   async fetchCheckedIn() {
     try {
       let checkedIn = await AsyncStorage.getAllKeys();
-      console.log(checkedIn)
       if (checkedIn) {
         this.setState({checkedIn: checkedIn});
       }
