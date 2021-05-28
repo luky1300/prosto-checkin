@@ -17,7 +17,7 @@ console.disableYellowBox = true;
 const Tab = createBottomTabNavigator();
 
 function MyTabs() {
-  const initTickets = [{ticketNumber: '62562603', name: 'Yuliya Roy', site: 'Charlotte'}];
+  const initTickets = [{ticketNumber: '00000001', name: 'Test User', site: 'Raleigh'}];
   const [tickets, setTickets] = useState(initTickets);
   const onTicketListChanged = (newTickets) => {
     //console.log("New tickets", newTickets)

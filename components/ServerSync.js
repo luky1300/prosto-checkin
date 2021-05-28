@@ -81,14 +81,14 @@ class NewGuest extends Component {
     return (
       <View style={styles.container}>
         <View style={styles.submitButton}>
-          <Button color="grey" title="Download Guest List" onPress={() => this.fetchGuestList()} disabled={true}/>
+          <Button color="black" title="Download Guest List" onPress={() => this.fetchGuestList()} />
         </View>
         <View style={styles.submitButton}>
           <Button color="black" title="Upload Guest List" onPress={() => this.save()}/>
         </View>     
         <View style={styles.submitButton}>
-          <Button color="black" title="Clear Storage" onPress={() => this.save()} />
-        </View>                
+          <Button color="black" title="Clear Storage" onPress={() => AsyncStorage.clear().done()} disabled={true} />
+        </View>
       </View>
     );
   }

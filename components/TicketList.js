@@ -92,10 +92,6 @@ class TicketList extends Component {
     );
     return (
       <View style={styles.container}>
-        <Button
-          title="Clear storage"
-          onPress={() => AsyncStorage.clear().done()}
-        />
         <View style={styles.containerQR}>
           <View style={styles.scanQR}>
             <Button
