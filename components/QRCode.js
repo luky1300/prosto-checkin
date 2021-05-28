@@ -9,7 +9,7 @@ class QRCode extends Component {
   }
 
   onSuccess = e => {
-    const checkedIn = this.props.route.params.checkedIn;
+    const checkedIn = this.props.route.params.checkedIn !== -1;
     const isCheckedIn = checkedIn.indexOf(e.data);
     this.props.navigation.navigate('Ticket Info', {
       ticketNumber: e.data,

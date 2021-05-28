@@ -73,7 +73,7 @@ class TicketInfo extends Component {
   }
 
   render() {
-    const ticket = this.props.route.params.tickets.find(
+    const ticket = this.props.ticketList.find(
       tick => tick.ticketNumber == this.state.ticketNumber,
     );
     if (!ticket.site) {

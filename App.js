@@ -54,7 +54,9 @@ function AllTickets(props) {
       <Stack.Screen name="All Tickets">
         {props => <TicketList {...props} ticketList={ticketListCopy} />}
       </Stack.Screen>
-      <Stack.Screen name="Ticket Info" component={TicketInfo} />
+      <Stack.Screen name="Ticket Info">
+        {props => <TicketInfo {...props} ticketList={ticketListCopy} />}
+      </Stack.Screen>
       <Stack.Screen name="QR Scanner" component={QRCode} />
     </Stack.Navigator>
   );
