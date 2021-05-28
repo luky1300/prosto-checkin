@@ -8,22 +8,23 @@ class NewGuest extends Component {
     super(props);
     this.state = {
       downloadDisabled: false,
-      disabledClick: 0
+      disabledClicks: 0
     };
   }
 
   async fetchGuestList() {
     if (!this.state.downloadDisabled) {
       let response = await fetch("https://pgblzu9w2d.execute-api.us-east-1.amazonaws.com/stage/ProstokvGuestsList");
-      let json = await response.json();
-      console.log("FETCH GUESTS LIST", json);
-      this.props.onTicketListChanged(json);
-      this.setState({downloadDisabled:true,disabledClick: 0});
+      let ticketList = await response.json();
+      console.log("FETCH GUESTS LIST", ticketList);
+      await AsyncStorage.setItem('ticket_list', JSON.stringify(ticketList));
+      this.props.onTicketListChanged(ticketList);
+      this.setState({downloadDisabled : true, disabledClicks: 0});
     } else {
       if (this.state.disabledClick == 5) {
-        this.setState({downloadDisabled:false, disabledClick: 0});  
+        this.setState({downloadDisabled:false, disabledClicks: 0});  
       } else {
-        this.setState({downloadDisabled:true, disabledClick: this.state.disabledClick + 1});
+        this.setState({disabledClicks: this.state.disabledClick + 1});
       }
     }
   }

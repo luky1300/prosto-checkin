@@ -1,5 +1,5 @@
 import 'react-native-gesture-handler';
-import React,  { useState }  from 'react';
+import React,  { useState, useEffect }  from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {createStackNavigator} from '@react-navigation/stack';
@@ -9,7 +9,7 @@ import ServerSync from './components/ServerSync';
 import TicketList from './components/TicketList';
 import QRCode from './components/QRCode';
 import TicketInfo from './components/TicketInfo';
-//import tickets from './data/tickets';
+import AsyncStorage from '@react-native-community/async-storage';
 
 //temporary do dissable warnings
 console.disableYellowBox = true;
@@ -17,10 +17,15 @@ console.disableYellowBox = true;
 const Tab = createBottomTabNavigator();
 
 function MyTabs() {
-  const initTickets = [{ticketNumber: '00000001', name: 'Test User', site: 'Raleigh'}];
-  const [tickets, setTickets] = useState(initTickets);
+  const [tickets, setTickets] = useState([]);
+
+  useEffect(async () => {
+    const ticketList = await AsyncStorage.getItem("ticket_list");
+    if (ticketList)
+      setTickets(JSON.parse(ticketList));
+  }, [])
+
   const onTicketListChanged = (newTickets) => {
-    //console.log("New tickets", newTickets)
     setTickets(newTickets);
   }
 
