@@ -9,11 +9,13 @@ class TicketInfo extends Component {
     this.state = {
       ticketNumber: this.props.route.params.ticketNumber,
       isCheckedIn: this.props.route.params.isCheckedIn,
+      isCheckedOut: this.props.route.params.isCheckedOut,
       entranceTime: '',
+      leaveTime: ''
     };
   }
 
-  onPressed() {
+  onCheckIn() {
     const time = new Date();
     this.setState({isCheckedIn: true, entranceTime: time.toLocaleString()});
     AsyncStorage.setItem(this.state.ticketNumber, time.toString()).then(() => {
@@ -21,20 +23,42 @@ class TicketInfo extends Component {
     });
   }
 
+  onCheckOut() {
+    this.setState({isCheckedIn: false, isCheckedOut: true, leaveTime:  new Date().toLocaleString()});
+  }
+
   isHere() {
-    if (this.state.isCheckedIn === -1) {
+    console.log(this.state)
+    if (!this.state.isCheckedIn) {
       return (
+        <View style={{width:'100%', alignItems: 'center', justifyContent: 'center'}}>
         <View style={styles.button}>
-          <Button title="Check in" onPress={() => this.onPressed()} />
+          <Button title="Check in" onPress={() => this.onCheckIn()} />
         </View>
+        {this.state.isCheckedOut ?
+          <View style={styles.ticketDetails}>
+            <Text style={styles.fieldValueStatus2}>
+              Previously checked out 
+            </Text>
+            <Text style={styles.fieldValueStatus2}>
+              {this.state.entranceTime}
+            </Text>
+          </View> : null
+        }
+      </View>       
       );
     } else {
       return (
-        <View style={styles.ticketDetails}>
-          <Text style={styles.fieldValueStatus}>Checked in</Text>
-          <Text style={styles.fieldValueStatus2}>
-            since {this.state.entranceTime}
-          </Text>
+        <View style={{ alignItems: 'center', justifyContent: 'center'}}>
+          <View style={styles.ticketDetails}>
+            <Text style={styles.fieldValueStatus}>Checked in</Text>
+            <Text style={styles.fieldValueStatus2}>
+              since {this.state.entranceTime}
+            </Text>
+          </View>
+          <View style={styles.button}>
+            <Button color="red" title="Check out" onPress={() => this.onCheckOut()} />
+          </View>
         </View>
       );
     }

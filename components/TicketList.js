@@ -40,7 +40,7 @@ class TicketList extends Component {
   }
 
   onPressed(num) {
-    const isCheckedIn = this.state.checkedIn.indexOf(num);
+    const isCheckedIn = this.state.checkedIn.indexOf(num) !== -1;
     this.props.navigation.navigate('Ticket Info', {
       ticketNumber: num,
       isCheckedIn: isCheckedIn,

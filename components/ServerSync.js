@@ -82,7 +82,7 @@ class NewGuest extends Component {
           <Button color="black" title="Upload Guest List"/>
         </View>     
         <View style={styles.submitButton}>
-          <Button color="black" title="Clear Storage" onPress={() => AsyncStorage.clear().done()} disabled={true} />
+          <Button color="black" title="Clear Storage" onPress={() => AsyncStorage.clear().done()} />
         </View>
       </View>
     );
