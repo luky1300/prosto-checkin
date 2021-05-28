@@ -7,17 +7,25 @@ class NewGuest extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      quantR: 0,
-      quantA: 0,
-      newGuests: [],
+      downloadDisabled: false,
+      disabledClick: 0
     };
   }
 
   async fetchGuestList() {
-    let response = await fetch("https://pgblzu9w2d.execute-api.us-east-1.amazonaws.com/stage/ProstokvGuestsList");
-    let json = await response.json();
-    console.log("FETCH GUESTS LIST", json);
-    this.props.onTicketListChanged(json);
+    if (!this.state.downloadDisabled) {
+      let response = await fetch("https://pgblzu9w2d.execute-api.us-east-1.amazonaws.com/stage/ProstokvGuestsList");
+      let json = await response.json();
+      console.log("FETCH GUESTS LIST", json);
+      this.props.onTicketListChanged(json);
+      this.setState({downloadDisabled:true,disabledClick: 0});
+    } else {
+      if (this.state.disabledClick == 5) {
+        this.setState({downloadDisabled:false, disabledClick: 0});  
+      } else {
+        this.setState({downloadDisabled:true, disabledClick: this.state.disabledClick + 1});
+      }
+    }
   }
 
   async save() {
@@ -59,19 +67,6 @@ class NewGuest extends Component {
     };
   }
 
-  showTotals() {
-    const {totalAmount, totalR, totalA} = this.getTotals();
-    return (
-      <View>
-        <Text />
-        <Text style={styles.totalsTextTitle}>New guests totals:</Text>
-        <Text style={styles.totalsText}>Regular tickets sold: {totalR}</Text>
-        <Text style={styles.totalsText}>Senior tickets sold: {totalA}</Text>
-        <Text style={styles.totalsText}>Total: ${totalAmount}</Text>
-      </View>
-    );
-  }
-
   componentDidMount() {
     //this.fetchNewGuests();
   }
@@ -81,10 +76,10 @@ class NewGuest extends Component {
     return (
       <View style={styles.container}>
         <View style={styles.submitButton}>
-          <Button color="black" title="Download Guest List" onPress={() => this.fetchGuestList()} />
+          <Button color={this.state.downloadDisabled? "grey" : "black"} title="Download Guest List" onPress={() => this.fetchGuestList()} />
         </View>
         <View style={styles.submitButton}>
-          <Button color="black" title="Upload Guest List" onPress={() => this.save()}/>
+          <Button color="black" title="Upload Guest List"/>
         </View>     
         <View style={styles.submitButton}>
           <Button color="black" title="Clear Storage" onPress={() => AsyncStorage.clear().done()} disabled={true} />
