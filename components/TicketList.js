@@ -21,12 +21,23 @@ class TicketList extends Component {
     this.state = {
       searchTerm: '',
       checkedIn: [],
-      tickets: [...this.props.ticketList]
+      tickets: [...this.props.ticketList],
+      filteredTickets: [...this.props.ticketList],
     };
     this.onCheckedIn = this.onCheckedIn.bind(this);
   }
+
   searchUpdated(term) {
-    this.setState({searchTerm: term});
+    const filteredTickets = this.state.tickets.filter(
+      ticket => {
+        return ticket.ticketNumber.includes(term) || ticket.transliteratedName.includes(term);
+      }
+    );
+    console.log(term, filteredTickets.length)
+    if (filteredTickets.length < 10) {
+      console.log(filteredTickets)
+    }
+    this.setState({searchTerm: term, filteredTickets: filteredTickets})
   }
 
   componentDidUpdate(prevProps){
@@ -39,6 +50,7 @@ class TicketList extends Component {
     const isCheckedIn = this.state.checkedIn.indexOf(num) !== -1;
     this.props.navigation.navigate('Ticket Info', {
       ticketNumber: num,
+      tickets:this.state.tickets,
       isCheckedIn: isCheckedIn,
       onCheckedIn: this.onCheckedIn,
     });
@@ -82,9 +94,6 @@ class TicketList extends Component {
   }
 
   render() {
-    const filteredTickets = this.state.tickets.filter(
-      createFilter(this.state.searchTerm, KEYS_TO_FILTERS, false),
-    );
     return (
       <View style={styles.container}>
         <View style={styles.containerQR}>
@@ -104,11 +113,11 @@ class TicketList extends Component {
           placeholder="Enter Ticket # or Last Name"
         />
         <ScrollView>
-          {filteredTickets.map(ticket => {
+          {this.state.filteredTickets.map((ticket, index) => {
             return (
               <TouchableOpacity
                 onPress={num => this.onPressed(ticket.ticketNumber)}
-                key={ticket.name}
+                key={ticket.ticketNumber}
                 style={styles.ticketItem}>
                 <View style={styles.ticketBox}>
                   <View style={styles.ticketInfo}>

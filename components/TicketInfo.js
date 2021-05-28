@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import {View, Text, Button, StyleSheet} from 'react-native';
-import tickets from '../data/tickets';
+//import tickets from '../data/tickets';
 import AsyncStorage from '@react-native-community/async-storage';
 
 class TicketInfo extends Component {
@@ -28,7 +28,6 @@ class TicketInfo extends Component {
   }
 
   isHere() {
-    console.log(this.state)
     if (!this.state.isCheckedIn) {
       return (
         <View style={{width:'100%', alignItems: 'center', justifyContent: 'center'}}>
@@ -74,7 +73,7 @@ class TicketInfo extends Component {
   }
 
   render() {
-    const ticket = tickets.find(
+    const ticket = this.props.route.params.tickets.find(
       tick => tick.ticketNumber == this.state.ticketNumber,
     );
     if (!ticket.site) {

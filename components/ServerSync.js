@@ -3,6 +3,29 @@ import {View, Text, StyleSheet, Button} from 'react-native';
 import NumericInput from 'react-native-numeric-input';
 import AsyncStorage from '@react-native-community/async-storage';
 
+
+function transliterate(str) {
+  TRANS_MAP = {
+    'а' : 'a', 'б' : 'b', 'в' : 'v', 'г' : 'g', 'д' : 'd', 'е' : 'e', 'ё' : 'yo', 'ж' : 'zh', 'з' : 'z',
+    'и' : 'i', 'й' : 'y', 'к' : 'k', 'л' : 'l', 'м' : 'm', 'н' : 'n', 'о' : 'o', 'п' : 'p', 'р' : 'r',
+    'с' : 's', 'т' : 't', 'у' : 'u', 'ф' : 'f', 'х' : 'h', 'ц' : 'z', 'ч' : 'ch', 'ш' : 'sh', 'щ' : 'sch',
+    'ь' : '', 'ы' : 'i', 'ъ' : '', 'э' : 'e', 'ю' : 'yu', 'я' : 'ya',
+    'А' : 'A', 'Б' : 'B', 'В' : 'V', 'Г' : 'G', 'Д' : 'D', 'Е' : 'E', 'Ё' : 'YO', 'Ж' : 'ZH', 'З' : 'Z', 
+    'И' : 'I', 'Й' : 'Y', 'К' : 'K', 'Л' : 'L', 'М' : 'M', 'Н' : 'N', 'О' : 'O', 'П' : 'P', 'Р' : 'R',
+    'С' : 'S', 'Т' : 'T', 'У' : 'U', 'Ф' : 'F', 'Х' : 'H', 'Ц' : 'Z', 'Ч' : 'CH', 'Ш' : 'SH', 'Щ' : 'SCH',
+    'Ь' : '', 'Ы' : 'I', 'Ъ' : '', 'Э' : 'E', 'Ю' : 'YU', 'Я' : 'YA'
+  }
+
+  let ret = ''
+  for (var i = 0; i < str.length; i++) {
+    let c = str.charAt(i);
+    if (c in TRANS_MAP)
+      ret += TRANS_MAP[c];
+    else
+      ret += c;
+  }
+  return ret.toLowerCase();
+}
 class NewGuest extends Component {
   constructor(props) {
     super(props);
@@ -16,7 +39,10 @@ class NewGuest extends Component {
     if (!this.state.downloadDisabled) {
       let response = await fetch("https://pgblzu9w2d.execute-api.us-east-1.amazonaws.com/stage/ProstokvGuestsList");
       let ticketList = await response.json();
-      console.log("FETCH GUESTS LIST", ticketList);
+      ticketList = ticketList.map(ticket => {
+        return {...ticket, transliteratedName : transliterate(ticket.name)}
+      })
+
       await AsyncStorage.setItem('ticket_list', JSON.stringify(ticketList));
       await AsyncStorage.setItem('download_disabled', 'true');
       this.props.onTicketListChanged(ticketList);
