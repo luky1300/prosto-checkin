@@ -18,10 +18,16 @@ class QRCode extends Component {
     });
   };
 
+  componentDidMount() {
+    this.props.navigation.addListener('focus', (route) => { 
+      this.scanner.reactivate()
+    });
+  } 
+
   render() {
-    console.log('QR CODE PROPS', this.props);
     return (
       <QRCodeScanner
+        ref={(scanner) => { this.scanner = scanner }}
         onRead={this.onSuccess}
         topContent={<Text style={styles.centerText}>Scan ticket</Text>}
       />
