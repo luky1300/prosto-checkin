@@ -65,7 +65,8 @@ class TicketInfo extends Component {
 
   async getEntranceTime(ticketNumber) {
     const time = await AsyncStorage.getItem(ticketNumber);
-    this.setState({entranceTime: new Date(time).toLocaleString()});
+    const date = time ? new Date(time) : new Date();
+    this.setState({entranceTime: date.toLocaleString()});
   }
 
   componentDidMount() {
@@ -73,9 +74,11 @@ class TicketInfo extends Component {
   }
 
   render() {
+    const ticketNumber = this.state.ticketNumber;
     const ticket = this.props.ticketList.find(
-      tick => tick.ticketNumber == this.state.ticketNumber,
-    );
+      tick => tick.ticketNumber == ticketNumber,
+    ) || {ticketNumber : ticketNumber, name : "WRONG TICKET"};
+    
     if (!ticket.site) {
       ticket.site = 'None';
     }
