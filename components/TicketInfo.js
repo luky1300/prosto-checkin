@@ -8,10 +8,8 @@ class TicketInfo extends Component {
     super(props);
     this.state = {
       ticketNumber: this.props.route.params.ticketNumber,
-      isCheckedIn: this.props.route.params.isCheckedIn,
-      isCheckedOut: this.props.route.params.isCheckedOut,
+      isCheckedIn: false,
       entranceTime: '',
-      leaveTime: ''
     };
   }
 
@@ -58,9 +56,13 @@ class TicketInfo extends Component {
 
   async getEntranceTime(ticketNumber) {
     const time = await AsyncStorage.getItem(ticketNumber);
-    const date = time ? new Date(time) : new Date();
-    // TODO: Calculate isCheckedIn property based on async storage state
-    this.setState({entranceTime: date.toLocaleString()});
+    const state = time ? {
+      isCheckedIn  : true,
+      entranceTime : new Date(time).toLocaleString()
+    } : {
+      isCheckedIn : false
+    }
+    this.setState(state);
   }
 
   componentDidMount() {
