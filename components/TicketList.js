@@ -81,6 +81,7 @@ class TicketList extends Component {
   async fetchCheckedIn() {
     try {
       let checkedIn = await AsyncStorage.getAllKeys();
+      console.log(checkedIn)
       if (checkedIn) {
         this.setState({checkedIn: checkedIn});
       }

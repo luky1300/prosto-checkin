@@ -24,7 +24,10 @@ class TicketInfo extends Component {
   }
 
   onCheckOut() {
-    this.setState({isCheckedIn: false, isCheckedOut: true, leaveTime:  new Date().toLocaleString()});
+    this.setState({isCheckedIn: false});
+    AsyncStorage.removeItem(this.state.ticketNumber).then(() => {
+      this.props.route.params.onCheckedIn();
+    });
   }
 
   isHere() {
@@ -34,16 +37,6 @@ class TicketInfo extends Component {
         <View style={styles.button}>
           <Button title="Check in" onPress={() => this.onCheckIn()} />
         </View>
-        {this.state.isCheckedOut ?
-          <View style={styles.ticketDetails}>
-            <Text style={styles.fieldValueStatus2}>
-              Previously checked out 
-            </Text>
-            <Text style={styles.fieldValueStatus2}>
-              {this.state.entranceTime}
-            </Text>
-          </View> : null
-        }
       </View>       
       );
     } else {
@@ -66,6 +59,7 @@ class TicketInfo extends Component {
   async getEntranceTime(ticketNumber) {
     const time = await AsyncStorage.getItem(ticketNumber);
     const date = time ? new Date(time) : new Date();
+    // TODO: Calculate isCheckedIn property based on async storage state
     this.setState({entranceTime: date.toLocaleString()});
   }
 
