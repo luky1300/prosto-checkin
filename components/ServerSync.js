@@ -35,6 +35,28 @@ class NewGuest extends Component {
     };
   }
 
+  async uploadGuestList() {
+      let keys = await AsyncStorage.getAllKeys();
+
+      let data = await Promise.all(keys.map(key => {
+          if (key == "ticket_list") {
+            return "";
+          }
+          return AsyncStorage.getItem(key).then(value => {
+            return {ticket : key, checkedIn : value};
+          });
+      }));
+
+      console.log(data);
+
+      let response = await fetch("https://pgblzu9w2d.execute-api.us-east-1.amazonaws.com/stage/ProstokvGuestsList", {
+        method : "POST",
+        body : JSON.stringify(data)
+      });
+
+      console.log("Response:", response);
+  }
+
   async fetchGuestList() {
     if (!this.state.downloadDisabled) {
       let response = await fetch("https://pgblzu9w2d.execute-api.us-east-1.amazonaws.com/stage/ProstokvGuestsList");
@@ -70,7 +92,7 @@ class NewGuest extends Component {
           <Button color={this.state.downloadDisabled? "grey" : "black"} title="Download Guest List" onPress={() => this.fetchGuestList()} />
         </View>
         <View style={styles.submitButton}>
-          <Button color="black" title="Upload Guest List"/>
+          <Button color="black" title="Upload Guest List"  onPress={() => this.uploadGuestList()}/>
         </View>     
         <View style={styles.submitButton}>
           <Button color="black" title="Clear Storage" onPress={() => AsyncStorage.clear().done()} />
