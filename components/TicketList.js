@@ -9,7 +9,7 @@ import {
   Button,
 } from 'react-native';
 import SearchInput, {createFilter} from 'react-native-search-filter';
-import tickets from '../data/tickets';
+//import tickets from '../data/tickets';
 import AsyncStorage from '@react-native-community/async-storage';
 
 const KEYS_TO_FILTERS = ['ticketNumber', 'name'];
@@ -17,20 +17,40 @@ const KEYS_TO_FILTERS = ['ticketNumber', 'name'];
 class TicketList extends Component {
   constructor(props) {
     super(props);
+
     this.state = {
       searchTerm: '',
       checkedIn: [],
+      tickets: [...this.props.ticketList],
+      filteredTickets: [...this.props.ticketList],
     };
     this.onCheckedIn = this.onCheckedIn.bind(this);
   }
+
   searchUpdated(term) {
-    this.setState({searchTerm: term});
+    const filteredTickets = this.state.tickets.filter(
+      ticket => {
+        return ticket.ticketNumber.includes(term) || ticket.transliteratedName.includes(term);
+      }
+    );
+    console.log(term, filteredTickets.length)
+    if (filteredTickets.length < 10) {
+      console.log(filteredTickets)
+    }
+    this.setState({searchTerm: term, filteredTickets: filteredTickets})
+  }
+
+  componentDidUpdate(prevProps){
+    if (prevProps.ticketList !== this.props.ticketList) {
+      this.setState({tickets : [...this.props.ticketList]})
+    }
   }
 
   onPressed(num) {
-    const isCheckedIn = this.state.checkedIn.indexOf(num);
+    const isCheckedIn = this.state.checkedIn.indexOf(num) !== -1;
     this.props.navigation.navigate('Ticket Info', {
       ticketNumber: num,
+      tickets:this.state.tickets,
       isCheckedIn: isCheckedIn,
       onCheckedIn: this.onCheckedIn,
     });
@@ -61,6 +81,7 @@ class TicketList extends Component {
   async fetchCheckedIn() {
     try {
       let checkedIn = await AsyncStorage.getAllKeys();
+      console.log(checkedIn)
       if (checkedIn) {
         this.setState({checkedIn: checkedIn});
       }
@@ -74,15 +95,8 @@ class TicketList extends Component {
   }
 
   render() {
-    const filteredTickets = tickets.filter(
-      createFilter(this.state.searchTerm, KEYS_TO_FILTERS),
-    );
     return (
       <View style={styles.container}>
-        <Button
-          title="Clear storage"
-          onPress={() => AsyncStorage.clear().done()}
-        />
         <View style={styles.containerQR}>
           <View style={styles.scanQR}>
             <Button
@@ -100,11 +114,11 @@ class TicketList extends Component {
           placeholder="Enter Ticket # or Last Name"
         />
         <ScrollView>
-          {filteredTickets.map(ticket => {
+          {this.state.filteredTickets.map((ticket, index) => {
             return (
               <TouchableOpacity
                 onPress={num => this.onPressed(ticket.ticketNumber)}
-                key={ticket.name}
+                key={ticket.ticketNumber}
                 style={styles.ticketItem}>
                 <View style={styles.ticketBox}>
                   <View style={styles.ticketInfo}>

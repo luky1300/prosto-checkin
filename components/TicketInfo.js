@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import {View, Text, Button, StyleSheet} from 'react-native';
-import tickets from '../data/tickets';
+//import tickets from '../data/tickets';
 import AsyncStorage from '@react-native-community/async-storage';
 
 class TicketInfo extends Component {
@@ -8,12 +8,12 @@ class TicketInfo extends Component {
     super(props);
     this.state = {
       ticketNumber: this.props.route.params.ticketNumber,
-      isCheckedIn: this.props.route.params.isCheckedIn,
+      isCheckedIn: false,
       entranceTime: '',
     };
   }
 
-  onPressed() {
+  onCheckIn() {
     const time = new Date();
     this.setState({isCheckedIn: true, entranceTime: time.toLocaleString()});
     AsyncStorage.setItem(this.state.ticketNumber, time.toString()).then(() => {
@@ -21,20 +21,34 @@ class TicketInfo extends Component {
     });
   }
 
+  onCheckOut() {
+    this.setState({isCheckedIn: false});
+    AsyncStorage.removeItem(this.state.ticketNumber).then(() => {
+      this.props.route.params.onCheckedIn();
+    });
+  }
+
   isHere() {
-    if (this.state.isCheckedIn === -1) {
+    if (!this.state.isCheckedIn) {
       return (
+        <View style={{width:'100%', alignItems: 'center', justifyContent: 'center'}}>
         <View style={styles.button}>
-          <Button title="Check in" onPress={() => this.onPressed()} />
+          <Button title="Check in" onPress={() => this.onCheckIn()} />
         </View>
+      </View>       
       );
     } else {
       return (
-        <View style={styles.ticketDetails}>
-          <Text style={styles.fieldValueStatus}>Checked in</Text>
-          <Text style={styles.fieldValueStatus2}>
-            since {this.state.entranceTime}
-          </Text>
+        <View style={{ alignItems: 'center', justifyContent: 'center'}}>
+          <View style={styles.ticketDetails}>
+            <Text style={styles.fieldValueStatus}>Checked in</Text>
+            <Text style={styles.fieldValueStatus2}>
+              since {this.state.entranceTime}
+            </Text>
+          </View>
+          <View style={styles.button}>
+            <Button color="red" title="Check out" onPress={() => this.onCheckOut()} />
+          </View>
         </View>
       );
     }
@@ -42,7 +56,13 @@ class TicketInfo extends Component {
 
   async getEntranceTime(ticketNumber) {
     const time = await AsyncStorage.getItem(ticketNumber);
-    this.setState({entranceTime: new Date(time).toLocaleString()});
+    const state = time ? {
+      isCheckedIn  : true,
+      entranceTime : new Date(time).toLocaleString()
+    } : {
+      isCheckedIn : false
+    }
+    this.setState(state);
   }
 
   componentDidMount() {
@@ -50,9 +70,11 @@ class TicketInfo extends Component {
   }
 
   render() {
-    const ticket = tickets.find(
-      tick => tick.ticketNumber == this.state.ticketNumber,
-    );
+    const ticketNumber = this.state.ticketNumber;
+    const ticket = this.props.ticketList.find(
+      tick => tick.ticketNumber == ticketNumber,
+    ) || {ticketNumber : ticketNumber, name : "WRONG TICKET"};
+    
     if (!ticket.site) {
       ticket.site = 'None';
     }

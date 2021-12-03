@@ -9,19 +9,25 @@ class QRCode extends Component {
   }
 
   onSuccess = e => {
-    const checkedIn = this.props.route.params.checkedIn;
-    const isCheckedIn = checkedIn.indexOf(e.data);
+    //const checkedIn = this.props.route.params.checkedIn;
+    //const isCheckedIn = checkedIn.indexOf(e.data) !== -1;
     this.props.navigation.navigate('Ticket Info', {
       ticketNumber: e.data,
-      isCheckedIn: isCheckedIn,
+      //isCheckedIn: isCheckedIn,
       onCheckedIn: this.props.route.params.onCheckedIn,
     });
   };
 
+  componentDidMount() {
+    this.props.navigation.addListener('focus', (route) => { 
+      this.scanner.reactivate()
+    });
+  } 
+
   render() {
-    console.log('QR CODE PROPS', this.props);
     return (
       <QRCodeScanner
+        ref={(scanner) => { this.scanner = scanner }}
         onRead={this.onSuccess}
         topContent={<Text style={styles.centerText}>Scan ticket</Text>}
       />
