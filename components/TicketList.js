@@ -28,6 +28,7 @@ class TicketList extends Component {
   }
 
   searchUpdated(term) {
+    term = term.toLowerCase();
     const filteredTickets = this.state.tickets.filter(
       ticket => {
         return ticket.ticketNumber.includes(term) || ticket.transliteratedName.includes(term);
