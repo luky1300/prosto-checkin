@@ -35,7 +35,7 @@ class TicketInfo extends Component {
         <View style={styles.button}>
           <Button title="Check in" onPress={() => this.onCheckIn()} />
         </View>
-      </View>       
+      </View>
       );
     } else {
       return (
@@ -51,6 +51,16 @@ class TicketInfo extends Component {
           </View>
         </View>
       );
+    }
+  }
+
+  renderDiscount(isDiscount) {
+    if (isDiscount) {
+      return (
+        <View style={styles.ticketDetails}>
+            <Text style={styles.fieldValueDiscount}>ЛЬГОТНЫЙ</Text>
+        </View>
+      )
     }
   }
 
@@ -74,12 +84,13 @@ class TicketInfo extends Component {
     const ticket = this.props.ticketList.find(
       tick => tick.ticketNumber == ticketNumber,
     ) || {ticketNumber : ticketNumber, name : "WRONG TICKET"};
-    
+
     if (!ticket.site) {
       ticket.site = 'None';
     }
     return (
       <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
+        {this.renderDiscount(ticket.isDiscount)}
         <View style={styles.ticketDetails}>
           <Text>TICKET NUMBER:</Text>
           <Text style={styles.fieldValue}>{ticket.ticketNumber}</Text>
@@ -121,6 +132,11 @@ const styles = StyleSheet.create({
   },
   fieldValueStatus2: {
     fontSize: 20,
+  },
+  fieldValueDiscount: {
+    backgroundColor: '#ff751a',
+    fontSize: 30,
+    marginBottom:20
   },
 });
 
