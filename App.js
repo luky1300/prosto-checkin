@@ -34,9 +34,9 @@ function MyTabs() {
       <Tab.Screen name="All Tickets">
         {props => <AllTickets {...props} ticketList={tickets} />}
       </Tab.Screen>
-      <Tab.Screen name="New Guests" component={NewGuest} />
+      <Tab.Screen name="Scan QR" component={QRCode} />
       <Tab.Screen name="Server Sync">
-        {props => <ServerSync {...props} ticketList={tickets} onTicketListChanged={onTicketListChanged}/>} 
+        {props => <ServerSync {...props} ticketList={tickets} onTicketListChanged={onTicketListChanged}/>}
       </Tab.Screen>
     </Tab.Navigator>
   );
